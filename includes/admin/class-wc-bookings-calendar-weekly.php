@@ -17,14 +17,14 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
      * Output the calendar view
      */
     public function output() {
-        wp_enqueue_script('week-picker', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.3', true);
+        wp_enqueue_script('week-picker', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.0', true);
 
         $product_filter = isset($_REQUEST[self::FILTER_PARAM]) ? absint($_REQUEST[self::FILTER_PARAM]) : '';
         // Work out the first day of the week
         $iFirstDay = get_option('start_of_week', 1);
         $firstday = date('l', strtotime("this sunday +{$iFirstDay} days"));
         // Clamp the date to the start of the week
-        $this->time = strtotime("last {$firstday}", strtotime($_REQUEST[self::WEEK_PARAM]) ?: time());
+        $this->time = strtotime("this {$firstday}", strtotime($_REQUEST[self::WEEK_PARAM]) ?: time());
 
         $this->bookings = WC_Bookings_Controller::get_bookings_in_date_range(
             strtotime("midnight last {$firstday}", $this->time),

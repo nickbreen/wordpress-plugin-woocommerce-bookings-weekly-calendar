@@ -6,7 +6,7 @@
 		<input type="hidden" name="post_type" value="wc_booking" />
 		<input type="hidden" name="page" value="booking_calendar_weekly" />
 		<input type="hidden" name="tab" value="calendar" />
-		<input type="text" name="calendar_week" id="calendar_week" value="<?php echo date('Y-m-d', $this->time); ?>" />
+		<input type="hidden" name="calendar_week" id="calendar_week" value="<?php echo date('Y-m-d', $this->time); ?>" />
 		<div class="tablenav">
 			<div class="filters">
 				<select id="calendar-bookings-filter" name="filter_bookings" class="wc-enhanced-select" style="width:200px">
@@ -28,14 +28,13 @@
 				</select>
 			</div>
 			<div class="filters">
-				<input class="week-picker" value="<?php echo strftime('%a, %e %b %Y', $this->time); ?>"
+				<input class="week-picker"
 					data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
 					data-datepicker.date-format="D, d M yy"
 					data-datepicker.alt-field="#calendar_week"
 			        data-datepicker.alt-format="yy-mm-dd"
-				/>
+					value="<?php echo date('D, j M Y', $this->time); ?> "/>
 			</div>
-			<div class="filters"><button type="submit"><?php _e('Go', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></button></div>
 		</div>
 
 		<table class="wc_bookings_calendar widefat">
