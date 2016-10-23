@@ -28,25 +28,45 @@
 				</select>
 			</div>
 			<div class="filters">
-				<input class="week-picker"
-					data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
-					data-datepicker.date-format="D, d M yy"
-					data-datepicker.alt-field="#calendar_week"
-			        data-datepicker.alt-format="yy-mm-dd"
-					value="<?php echo date('D, j M Y', $this->time); ?> "/>
+				<label>Week <b><?php echo date('W', $this->time); ?></b> starting:&nbsp;
+					<input class="week-picker"
+						data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
+						data-datepicker.date-format="D, j M yy"
+						data-datepicker.alt-field="#calendar_week"
+				        data-datepicker.alt-format="yy-mm-dd"
+						value="<?php echo date('D, j M Y', $this->time); ?> "/>
+				</label>
+				<button>Go</button>
 			</div>
 		</div>
 
 		<table class="wc_bookings_calendar widefat">
 			<thead>
 				<tr>
+					<th><?php _e('Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></th>
 					<?php for ($ii = get_option('start_of_week', 1); $ii < get_option('start_of_week', 1) + 7; $ii ++) : ?>
 						<th><?php echo date_i18n(_x('l', 'date format', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'), strtotime("next sunday +{$ii} day")); ?></th>
 					<?php endfor; ?>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<?php foreach ($this->bookings as $product_id => $bookings): ?>
+					<tr>
+						<td><?php echo $product_id; ?></td>
+						<?php for ($ii = get_option('start_of_week', 1); $ii < get_option('start_of_week', 1) + 7; $ii ++) : ?>
+							<td>
+								<ul>
+									<?php foreach($this->list_bookings($product_id, strtotime("next sunday +{$ii} day")) as $booking): ?>
+										<li style="white-space: pre; text-align: initial">
+											<?php echo $booking->id; ?>
+											<?php print_r($booking); ?>
+										</li>
+									<?php endforeach; ?>
+								</ul>
+							</td>
+						<?php endfor; ?>
+					</tr>
+				<?php endforeach; ?>
 					<?php /*
 						$timestamp = $start_timestamp;
 						$index     = 0;
@@ -79,7 +99,6 @@
 							}
 						endwhile;
 					*/ ?>
-				</tr>
 			</tbody>
 		</table>
 	</form>

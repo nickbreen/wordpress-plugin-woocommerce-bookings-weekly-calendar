@@ -10,13 +10,14 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
     const FILTER_PARAM = 'filter_bookings';
     const WEEK_PARAM = 'calendar_week';
 
-    private $bookings;
+    private $bookings = [];
     private $time;
 
     /**
      * Output the calendar view
      */
-    public function output() {
+    public function output()
+    {
         wp_enqueue_script('week-picker', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.0', true);
 
         $product_filter = isset($_REQUEST[self::FILTER_PARAM]) ? absint($_REQUEST[self::FILTER_PARAM]) : '';
@@ -26,20 +27,32 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
         // Clamp the date to the start of the week
         $this->time = strtotime("this {$firstday}", strtotime($_REQUEST[self::WEEK_PARAM]) ?: time());
 
-        $this->bookings = WC_Bookings_Controller::get_bookings_in_date_range(
+        $bookings = WC_Bookings_Controller::get_bookings_in_date_range(
             strtotime("midnight last {$firstday}", $this->time),
             strtotime("midnight next {$firstday}", $this->time),
             $product_filter,
             false
         );
 
+        foreach ($bookings as $booking) {
+            $this->bookings[$booking->get_product_id()][] = $booking;
+        }
+
         require('views/html-calendar-week.php');
+    }
+
+    public function list_bookings($product_id, $date)
+    {
+        return array_filter($this->bookings[$product_id], function ($booking) use ($date) {
+            return date('N', $date) == $booking->get_start_date('N');
+        });
     }
 
     /**
      * Filters products for narrowing search
      */
-    public function product_filters() {
+    public function product_filters()
+    {
         $filters = array();
 
         $products = WC_Bookings_Admin::get_booking_products();
@@ -60,7 +73,8 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
     /**
      * Filters resources for narrowing search
      */
-    public function resources_filters() {
+    public function resources_filters()
+    {
         $filters = array();
 
         $resources = WC_Bookings_Admin::get_booking_resources();

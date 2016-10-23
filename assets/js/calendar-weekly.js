@@ -1,4 +1,3 @@
-// jQuery UI date picker to pick a week
 jQuery(function($) {
 
     $('.week-picker').datepicker({
@@ -9,7 +8,9 @@ jQuery(function($) {
             var date = $(this).datepicker("getDate");
             date.setDate(date.getDate() - date.getDay() + parseInt(inst.settings.firstDay));
             $(this).datepicker("setDate", date);
-            $(this.form).submit();
+        },
+        onClose: function () {
+            this.blur();
         },
         beforeShow: function (input, inst) {
             var X = [];
