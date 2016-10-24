@@ -1,0 +1,9 @@
+.wc_bookings_calendar.wc_bookings_calendar_weekly tbody td {
+    text-align: initial;
+    padding: 0.25em;
+}
+
+.wc_bookings_calendar_weekly caption {
+    font-size: 2em;
+    line-height: 2em;
+}

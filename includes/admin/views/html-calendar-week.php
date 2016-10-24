@@ -31,7 +31,7 @@
 				<label>Week <b><?php echo date('W', $this->time); ?></b> starting:&nbsp;
 					<input class="week-picker"
 						data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
-						data-datepicker.date-format="D, j M yy"
+						data-datepicker.date-format="D, d M yy"
 						data-datepicker.alt-field="#calendar_week"
 				        data-datepicker.alt-format="yy-mm-dd"
 						value="<?php echo date('D, j M Y', $this->time); ?> "/>
@@ -40,65 +40,52 @@
 			</div>
 		</div>
 
-		<table class="wc_bookings_calendar widefat">
+		<table class="wc_bookings_calendar wc_bookings_calendar_weekly widefat">
+			<caption>Week <b><?php echo date('W', $this->time); ?></b> starting <b><?php echo date('D, j M Y', $this->time); ?></b></caption>
 			<thead>
 				<tr>
-					<th><?php _e('Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></th>
+					<th width="20%"><?php _e('Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></th>
 					<?php for ($ii = get_option('start_of_week', 1); $ii < get_option('start_of_week', 1) + 7; $ii ++) : ?>
-						<th><?php echo date_i18n(_x('l', 'date format', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'), strtotime("next sunday +{$ii} day")); ?></th>
+						<th width="10%"><?php echo date_i18n(_x('l', 'date format', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'), strtotime("next sunday +{$ii} day")); ?></th>
 					<?php endfor; ?>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($this->bookings as $product_id => $bookings): ?>
+				<?php foreach ($this->bookings as $product_id => $days): ?>
+					<?php $product = $this->lookup_product($product_id); ?>
 					<tr>
-						<td><?php echo $product_id; ?></td>
+						<td>
+							<p><a class="product" title="<?php _e('Edit Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+								href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $product_id)); ?>"><?php echo $product_id; ?></a>
+								<?php echo $product->post_title; ?></p>
+						</td>
 						<?php for ($ii = get_option('start_of_week', 1); $ii < get_option('start_of_week', 1) + 7; $ii ++) : ?>
 							<td>
 								<ul>
-									<?php foreach($this->list_bookings($product_id, strtotime("next sunday +{$ii} day")) as $booking): ?>
-										<li style="white-space: pre; text-align: initial">
-											<?php echo $booking->id; ?>
-											<?php print_r($booking); ?>
+									<?php $persons = []; ?>
+									<?php foreach($days[$ii] as $booking): ?>
+										<?php $persons[$booking->status] += count($booking->get_persons()); ?>
+										<li>
+											<a class="booking" title="<?php _e('Edit Booking', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+												href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->id)); ?>"><?php echo $booking->id; ?></a>
+											/ <a class="order" title="<?php _e('Edit Order', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+												href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->order_id)); ?>"><?php echo $booking->order_id; ?></a>
+											for <tt><?php echo count($booking->get_persons()); ?></tt>, <b><?php echo $booking->status; ?></b>.
 										</li>
 									<?php endforeach; ?>
 								</ul>
+								<?php if ($persons): ?>
+									<hr/>
+									<ul>
+										<?php foreach ($persons as $status => $count): ?>
+											<li>Total <b><?php echo $status; ?></b>: <tt><?php echo $count; ?></tt> persons.</li>
+										<?php endforeach; ?>
+									</ul>
+								<?php endif; ?>
 							</td>
 						<?php endfor; ?>
 					</tr>
 				<?php endforeach; ?>
-					<?php /*
-						$timestamp = $start_timestamp;
-						$index     = 0;
-						while ($timestamp <= $end_timestamp) :
-							?>
-							<td width="14.285%" class="<?php
-							if (date('n', $timestamp) != absint($month)) {
-								echo 'calendar-diff-month';
-							}
-							?>">
-								<a href="<?php echo admin_url('edit.php?post_type=wc_booking&page=booking_calendar&view=day&tab=calendar&calendar_day=' . date('Y-m-d', $timestamp)); ?>">
-									<?php echo date('d', $timestamp); ?>
-								</a>
-								<div class="bookings">
-									<ul>
-										<?php $this->list_bookings(
-											date('d', $timestamp),
-											date('m', $timestamp),
-											date('Y', $timestamp)
-										);  ?>
-									</ul>
-								</div>
-							</td>
-							<?php
-							$timestamp = strtotime('+1 day', $timestamp);
-							$index ++;
-
-							if ($index % 7 === 0) {
-								echo '</tr><tr>';
-							}
-						endwhile;
-					*/ ?>
 			</tbody>
 		</table>
 	</form>

@@ -11,6 +11,7 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
     const WEEK_PARAM = 'calendar_week';
 
     private $bookings = [];
+    private $products = [];
     private $time;
 
     /**
@@ -18,7 +19,8 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
      */
     public function output()
     {
-        wp_enqueue_script('week-picker', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.0', true);
+        wp_enqueue_script('calendar-weekly', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.0', true);
+        wp_enqueue_style('calendar-weekly', plugins_url( '../../assets/css/calendar-weekly.css', __FILE__ ));
 
         $product_filter = isset($_REQUEST[self::FILTER_PARAM]) ? absint($_REQUEST[self::FILTER_PARAM]) : '';
         // Work out the first day of the week
@@ -35,17 +37,19 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
         );
 
         foreach ($bookings as $booking) {
-            $this->bookings[$booking->get_product_id()][] = $booking;
+            $this->bookings[$booking->get_product_id()][$booking->get_start_date('N')][] = $booking;
+        }
+
+        $products = WC_Bookings_Admin::get_booking_products();
+        foreach ($products as $product) {
+            $this->products[$product->ID] = $product;
         }
 
         require('views/html-calendar-week.php');
     }
 
-    public function list_bookings($product_id, $date)
-    {
-        return array_filter($this->bookings[$product_id], function ($booking) use ($date) {
-            return date('N', $date) == $booking->get_start_date('N');
-        });
+    public function lookup_product($product_id) {
+        return $this->products[$product_id];
     }
 
     /**
