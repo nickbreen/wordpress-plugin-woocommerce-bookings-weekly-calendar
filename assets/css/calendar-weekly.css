@@ -7,3 +7,11 @@
     font-size: 2em;
     line-height: 2em;
 }
+
+.wc_bookings_calendar_form .tablenav .views a {
+    display: inline-block;
+}
+
+.wc_bookings_calendar_form .tablenav .views a.new-booking::before {
+    content: '\ff0b'; /* FULLWIDTH PLUS SIGN */
+}

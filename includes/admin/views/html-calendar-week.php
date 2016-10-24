@@ -27,16 +27,23 @@
 					<?php endif; ?>
 				</select>
 			</div>
-			<div class="filters">
-				<label>Week <b><?php echo date('W', $this->time); ?></b> starting:&nbsp;
-					<input class="week-picker"
-						data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
-						data-datepicker.date-format="D, d M yy"
-						data-datepicker.alt-field="#calendar_week"
-				        data-datepicker.alt-format="yy-mm-dd"
-						value="<?php echo date('D, j M Y', $this->time); ?> "/>
-				</label>
-				<button>Go</button>
+			<div class="date_selector">
+				<div>
+					<label>Week <b><?php echo date('W', $this->time); ?></b> starting:&nbsp;
+						<input class="week-picker"
+							data-datepicker.first-day="<?php echo get_option('start_of_week', 1); ?>"
+							data-datepicker.date-format="D, d M yy"
+							data-datepicker.alt-field="#calendar_week"
+					        data-datepicker.alt-format="yy-mm-dd"
+							value="<?php echo date('D, j M Y', $this->time); ?> "/>
+					</label>
+					<button>Go</button>
+				</div>
+			</div>
+			<div class="views">
+				<a class="new-booking" href="<?php echo admin_url('edit.php?post_type=wc_booking&page=create_booking'); ?>"><?php _e('New Booking', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></a>
+				<a class="day" href="<?php echo esc_url(add_query_arg(array('view' => 'day', 'page' => 'booking_calendar'))); ?>"><?php _e( 'Day View', 'woocommerce-bookings' ); ?></a>
+				<a class="month" href="<?php echo esc_url(add_query_arg(array('view' => 'month', 'page' => 'booking_calendar'))); ?>"><?php _e( 'Month View', 'woocommerce-bookings' ); ?></a>
 			</div>
 		</div>
 
