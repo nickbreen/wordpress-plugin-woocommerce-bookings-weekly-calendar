@@ -62,9 +62,8 @@
 					<?php $product = $this->lookup_product($product_id); ?>
 					<tr>
 						<td>
-							<p><a class="product" title="<?php _e('Edit Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
-								href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $product_id)); ?>"><?php echo $product_id; ?></a>
-								<?php echo $product->post_title; ?></p>
+							<p><a class="product" title="<?php _e('Edit Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?> <?php echo $product_id; ?>"
+								href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $product_id)); ?>"><?php echo $product->post_title; ?></a></p>
 						</td>
 						<?php for ($ii = get_option('start_of_week', 1); $ii < get_option('start_of_week', 1) + 7; $ii ++) : ?>
 							<td>
@@ -72,10 +71,10 @@
 									<?php $persons = []; ?>
 									<?php foreach($days[$ii] as $booking): ?>
 										<?php $persons[$booking->status] += count($booking->get_persons()); ?>
-										<li>
+										<li class="<?php echo $booking->status; ?>">
 											<a class="booking" title="<?php _e('Edit Booking', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
-												href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->id)); ?>"><?php echo $booking->id; ?></a>
-											/ <a class="order" title="<?php _e('Edit Order', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+												href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->id)); ?>"><?php echo $booking->id; ?></a>/<a class="order"
+												title="<?php _e('Edit Order', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
 												href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->order_id)); ?>"><?php echo $booking->order_id; ?></a>
 											for <tt><?php echo count($booking->get_persons()); ?></tt>, <b><?php echo $booking->status; ?></b>.
 										</li>
