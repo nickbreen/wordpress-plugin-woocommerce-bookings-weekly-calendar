@@ -19,10 +19,6 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
     private $customers = [];
     private $time;
 
-    private function validate_week($value) {
-        return in_array($value, [self::VCUST, self::VPROD]) ? $value : self::VPROD;
-    }
-
     /**
      * Output the calendar view
      */
