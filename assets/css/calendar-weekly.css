@@ -1,0 +1,21 @@
+.wc_bookings_calendar.wc_bookings_calendar_weekly tbody td {
+    text-align: initial;
+    padding: 0.25em;
+}
+
+.wc_bookings_calendar.wc_bookings_calendar_weekly tbody td a.product::before {
+    content: '\270e\00a0'; /* LOWER RIGHT PENCIL + NO-BREAK SPACE */
+}
+
+.wc_bookings_calendar_weekly caption {
+    font-size: 2em;
+    line-height: 2em;
+}
+
+.wc_bookings_calendar_form .tablenav .views a {
+    display: inline-block;
+}
+
+.wc_bookings_calendar_form .tablenav .views a.new-booking::before {
+    content: '\ff0b'; /* FULLWIDTH PLUS SIGN */
+}

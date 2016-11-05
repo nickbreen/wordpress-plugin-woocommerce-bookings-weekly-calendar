@@ -1,0 +1,62 @@
+<?php foreach ($this->bookings as $product_id => $product_bookings): ?>
+	<?php $product = $this->products[$product_id]; ?>
+	<?php $firstRow = TRUE; ?>
+	<?php foreach($product_bookings as $customer_id => $days): ?>
+		<?php
+		$duration_type = get_post_meta($product_id, '_wc_booking_duration_type', true);
+		$duration = max(absint(get_post_meta($product_id, '_wc_booking_duration', true)), 0);
+		$duration_unit = get_post_meta($product_id, '_wc_booking_duration_unit', true);
+		?>
+		<tr>
+			<?php if ($firstRow): ?>
+				<?php $firstRow = FALSE; ?>
+				<td rowspan="<?php echo count($product_bookings); ?>">
+					<p><a class="product" title="<?php _e('Edit Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?> <?php echo $product_id; ?>"
+						href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $product_id)); ?>"><?php echo $product->post_title; ?></a></p>
+				</td>
+			<?php endif; ?>
+			<?php for ($ii = $iFirstDay; $ii < $iFirstDay + 7; $ii ++) : ?>
+				<?php $day = $days[$ii]; ?>
+				<?php if ($day && $duration_type == 'fixed' && $duration_unit == 'day'): ?>
+					<td colspan="<?php echo min($duration, $iFirstDay + 7 - $ii); ?>" class="booked">
+					<?php $ii += $duration -1; ?>
+				<?php else: ?>
+					<td>
+				<?php endif; ?>
+					<?php if ($day): ?>
+						<p><b><a class="customer" title="<?php _e('Edit Customer', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?> <?php echo $customer_id; ?>"
+							href="<?php echo admin_url(sprintf('edit-user.php?user_id=%d', $customer_id)); ?>"><?php echo $customer->name; ?></a></b></p>
+							<p><a class="customer" title="<?php _e('Email Customer', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?> <?php echo $customer_id; ?>"
+								href="mailto:<?php echo $customer->email; ?>"><?php echo $customer->email; ?></a></p>
+					<?php endif; ?>
+					<ul>
+						<?php foreach($day as $booking): ?>
+							<li class="<?php echo $booking->status; ?>">
+								<a class="order"
+									title="<?php _e('Edit Order', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+									href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->order_id)); ?>"><?php echo $booking->order_id; ?></a>/<a
+									class="booking"
+									title="<?php _e('Edit Booking', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
+									href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->id)); ?>"><?php echo $booking->id; ?></a>
+								<tt><?php echo count($booking->get_persons()); ?></tt> persons <b><?php echo $booking->status; ?></b>.
+							</li>
+						<?php endforeach; ?>
+					</ul>
+					<?php $persons = []; ?>
+					<?php foreach($day as $booking): ?>
+						<?php $persons[$booking->status] += count($booking->get_persons()); ?>
+					<?php endforeach; ?>
+					<?php if ($persons): ?>
+						<hr/>
+						<ul>
+							<?php foreach ($persons as $status => $count): ?>
+								<li><tt><?php echo $count; ?></tt> persons <b><?php echo $status; ?></b>.</li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</td>
+			<?php endfor; ?>
+		</tr>
+		<?php unset($duration_type, $duration, $duration_unit); ?>
+	<?php endforeach; ?>
+<?php endforeach; ?>
