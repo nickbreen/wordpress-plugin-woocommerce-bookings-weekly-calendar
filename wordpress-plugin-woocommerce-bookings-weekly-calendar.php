@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WooCommerce Bookings Weekly Calendar
-Version: 0.1.0
+Version: 0.2.0
 Description: Provides a weekly calendar view for WooCommerce Bookings.
 Author: Nick Breen
 Author URI: http://foobar.net.nz

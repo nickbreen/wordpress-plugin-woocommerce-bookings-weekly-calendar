@@ -46,15 +46,7 @@
 					<?php endif; ?>
 					<ul>
 						<?php foreach($day as $booking): ?>
-							<li class="<?php echo $booking->status; ?>">
-								<a class="order"
-									title="<?php _e('Edit Order', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
-									href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->order_id)); ?>"><?php echo $booking->order_id; ?></a>/<a
-									class="booking"
-									title="<?php _e('Edit Booking', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?>"
-									href="<?php echo admin_url(sprintf('post.php?post=%d&action=edit', $booking->id)); ?>"><?php echo $booking->id; ?></a>
-								<tt><?php echo count($booking->get_persons()); ?></tt> persons <b><?php echo $booking->status; ?></b>.
-							</li>
+							<?php require("booking.php"); ?>
 						<?php endforeach; ?>
 					</ul>
 				</td>

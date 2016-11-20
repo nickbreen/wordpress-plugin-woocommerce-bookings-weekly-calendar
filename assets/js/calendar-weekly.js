@@ -27,9 +27,4 @@ jQuery(function($) {
     $('.ui-datepicker-calendar tr').live('mousemove', function() { $(this).find('td a').addClass('ui-state-hover'); });
     $('.ui-datepicker-calendar tr').live('mouseleave', function() { $(this).find('td a').removeClass('ui-state-hover'); });
 
-    $('table.wc_bookings_calendar_weekly td.booked').each(function (i) {
-        var r = 360*5*i/12;
-        $(this).css('background-color', 'hsla('+r+', 50%, 50%, 0.0675)');
-    });
-
 });

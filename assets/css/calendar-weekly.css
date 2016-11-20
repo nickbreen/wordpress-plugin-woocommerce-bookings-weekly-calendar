@@ -19,3 +19,23 @@
 .wc_bookings_calendar_form .tablenav .views a.new-booking::before {
     content: '\ff0b'; /* FULLWIDTH PLUS SIGN */
 }
+
+table.wc_bookings_calendar_weekly td.booked,
+ul.drivers li {
+    background-color: hsla(0, 0%, 50%, 0.25);
+}
+
+ul.drivers li {
+    width: auto;
+    width: content-min;
+    display: inline-block;
+    margin: 0.25em 1em;
+    padding: 0.25em 1em;
+    line-height: 1.6em;
+    cursor: move;
+}
+
+ul.drivers li:before {
+    content:'\2630';
+    margin: 0.25em 1em 0.25em -0.5em;
+}
