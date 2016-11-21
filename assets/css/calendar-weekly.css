@@ -21,11 +21,20 @@
 }
 
 table.wc_bookings_calendar_weekly td.booked,
-ul.drivers li {
+.drivers li {
     background-color: hsla(0, 0%, 50%, 0.25);
 }
 
-ul.drivers li {
+.wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr th,
+    .wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {
+    text-align: left;
+}
+
+table.wc_bookings_calendar_weekly tfoot td {
+    vertical-align: middle;
+}
+
+.drivers li {
     width: auto;
     width: content-min;
     display: inline-block;
@@ -33,9 +42,10 @@ ul.drivers li {
     padding: 0.25em 1em;
     line-height: 1.6em;
     cursor: move;
+    white-space: nowrap;
 }
 
-ul.drivers li:before {
+.drivers li:before {
     content:'\2630';
     margin: 0.25em 1em 0.25em -0.5em;
 }

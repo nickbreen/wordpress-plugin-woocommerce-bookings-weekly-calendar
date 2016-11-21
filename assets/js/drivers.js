@@ -3,7 +3,7 @@ jQuery(function($) {
     var me = null;
     var drivers = [];
     var driverBookings = [];
-    var bookings = $('.booking');
+    var bookings = $('li.booking');
 
     $('table.wc_bookings_calendar_weekly td.booked').droppable({
         accept: 'ul.drivers li',
@@ -12,13 +12,19 @@ jQuery(function($) {
         },
         hoverClass: "ui-state-hover", // pre 1.12.0
         drop: function (event, ui) {
-            console.log(event, ui,
-
-            ui.draggable.get(0).dataset,
-            $(this).find('li')
-        )
-            // AJAX to add or remove assignment
-            $(this).find('li')
+            var driver = ui.draggable.get(0).dataset.driverId
+            var bookings = $.map($(this).find('li').get(), function (e, i) {
+                return e.dataset.bookingId;
+            })
+            $.ajax(wpApiSettings.root + 'wp/v2/driver', {
+                method: 'POST',
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                data: {
+                    user: driver,
+                    bookings: bookings
+                },
+            })
         },
     })
 
@@ -30,14 +36,20 @@ jQuery(function($) {
             console.error("%s; %s", textStatus, errorThrown);
         },
         complete: function (jqXHR, textStatus) {
-            // console.dir([driverBookings, drivers, bookings]);
-        }
-    });
+            console.dir({driverBookings:driverBookings, drivers:drivers, bookings:bookings});
 
-    $.ajax(wpApiSettings.root + 'wp/v2/users/me', {
-        success: function (data, textStatus, jqXHR) {
-            me = data;
-        }
+            for (i in driverBookings) {
+                bookings.filter(function (j, e) {
+                    // console.log(parseInt(this.dataset.bookingId), driverBookings[i].bookings, driverBookings[i].bookings.indexOf(parseInt(this.dataset.bookingId)))
+                    return -1 != driverBookings[i].bookings.indexOf(parseInt(this.dataset.bookingId))
+                })
+                .closest('td')
+                .filter(function () {
+                    return driverBookings[i].user in drivers
+                })
+                .css('background-color', drivers[driverBookings[i].user]['background-color'])
+            }
+        },
     });
 
     $.ajax(wpApiSettings.root + 'wp/v2/users', {
@@ -54,21 +66,21 @@ jQuery(function($) {
                 }
             },
             function (data, textStatus, jqXHR) {
-                drivers = data;
+                for (i in data)
+                    drivers[data[i].id] = data[i]
             },
             function (data, textStatus, jqXHR) {
-                $("<h1>").text("Drivers").appendTo('#mainform')
-                $('<ul>').addClass('drivers')
-                    .append($('<li>').text("no driver"))
-                    .append(
-                        $.map(data, function (element, i) {
-                            return $('<li>')
-                                .text(element.name)
-                                .css('background-color', element['background-color'])
-                                .data(element)
-                                .attr('data-driver-id', element.id)
-                        })
-                    ).appendTo('#mainform').children('li').draggable({helper: 'clone', opacity: 0.7})
+                $('<tfoot><tr><th>Drivers<td colspan="7"><ul class="drivers">').appendTo('table.wc_bookings_calendar_weekly')
+
+                $('<li>').appendTo('ul.drivers').text("no driver").after(
+                    $.map(data, function (element, i) {
+                        return $('<li>')
+                            .text(element.name)
+                            .data(element)
+                            .attr('data-driver-id', element.id)
+                            .css('background-color', element['background-color'])
+                    })
+                ).siblings('li').addBack().draggable({helper: 'clone', opacity: 0.7})
             }
         ]
     });
