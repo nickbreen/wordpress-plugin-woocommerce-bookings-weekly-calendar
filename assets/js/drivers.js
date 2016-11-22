@@ -7,14 +7,8 @@ jQuery(function($) {
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("%s; %s", textStatus, errorThrown);
         },
-        beforeSend: function (jqXHR, settings) {
-            console.dir(settings.data)
-        },
         complete: function (jqXHR, textStatus) {
-            console.info(textStatus);
-        },
-        success: function (data, textStatus, jqXHR) {
-            console.dir(data);
+            console.debug(textStatus);
         },
     }
 
@@ -46,6 +40,9 @@ jQuery(function($) {
     })
 
     $.ajax(wpApiSettings.root + 'wp/v2/driver', $.extend({}, ajaxDefaults, {
+        data: {
+            status: '*'
+        },
         success: [
             function (data, textStatus, jqXHR) {
                 $('<tfoot><tr><th>Drivers<td colspan="7"><ul class="drivers">').appendTo('table.wc_bookings_calendar_weekly')
