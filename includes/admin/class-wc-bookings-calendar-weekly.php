@@ -27,7 +27,7 @@ class WC_Bookings_Calendar_Weekly //extends WC_Bookings_Calendar
         wp_enqueue_script('calendar-weekly', plugins_url( '../../assets/js/calendar-weekly.js', __FILE__ ), array('jquery-ui-datepicker'), '0.0.0', true);
         wp_enqueue_style('calendar-weekly', plugins_url( '../../assets/css/calendar-weekly.css', __FILE__ ));
 
-        wp_enqueue_script('calendar-weekly-drivers', plugins_url( '../../assets/js/drivers.js', __FILE__ ), array('jquery-ui-droppable'), '0.0.0', true);
+        wp_enqueue_script('calendar-weekly-drivers', plugins_url( '../../assets/js/drivers.js', __FILE__ ), array('jquery-ui-droppable', 'jquery-color'), '0.0.0', true);
         wp_localize_script('calendar-weekly-drivers', 'wpApiSettings', array('root' => esc_url_raw(rest_url()), 'nonce' => wp_create_nonce('wp_rest')));
 
         $product_filter = filter_input(INPUT_GET, self::FILTER_PARAM, FILTER_CALLBACK, ['options' => function ($value) {

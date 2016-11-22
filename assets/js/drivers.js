@@ -39,11 +39,11 @@ jQuery(function($) {
                 $('<tfoot><tr><th>Drivers<td colspan="7"><ul class="drivers">').appendTo('table.wc_bookings_calendar_weekly')
                 $('<li>').text("no driver")
                     .appendTo('ul.drivers').after(
-                        $.map(data, function (element, i) {
+                        $.map(data, function (e, i) {
                             return $('<li>').addClass('driver')
-                                .text(element.title.rendered)
-                                .data(element)
-                                .css('background-color', element.colour)
+                                .text(e.title.rendered)
+                                .data(e)
+                                .css('background-color', $.Color(e.colour).lightness(0.75))
                         })
                     )
                     .siblings().addBack().draggable({helper: 'clone', opacity: 0.7})
@@ -57,7 +57,7 @@ jQuery(function($) {
                             return e.bookings.includes(parseInt(this.dataset.bookingId))
                         }).length
                     })
-                    .css('background-color', e.colour)
+                    .css('background-color', $.Color(e.colour).lightness(0.75))
                 })
             },
         ]
