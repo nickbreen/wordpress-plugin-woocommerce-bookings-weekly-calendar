@@ -25,8 +25,7 @@ table.wc_bookings_calendar_weekly td.booked,
     background-color: hsla(0, 0%, 50%, 0.25);
 }
 
-.wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr th,
-    .wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {
+.wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {
     text-align: left;
 }
 
@@ -34,15 +33,33 @@ table.wc_bookings_calendar_weekly tfoot td {
     vertical-align: middle;
 }
 
+.booking {
+    white-space: nowrap;
+}
+
+.booking .driver,
 .drivers li {
     width: auto;
     width: content-min;
     display: inline-block;
+    display: inline-list-item;
     margin: 0.25em 1em;
     padding: 0.25em 1em;
     line-height: 1.6em;
-    cursor: move;
     white-space: nowrap;
+}
+
+.booking .driver {
+    cursor: pointer;
+}
+
+.drivers li {
+    cursor: move;
+}
+
+.booking .driver::before {
+    content:'\274e';
+    margin: 0.25em 1em 0.25em -0.5em;
 }
 
 .drivers li:before {
