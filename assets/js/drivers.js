@@ -33,11 +33,14 @@ jQuery(function($) {
                 data: JSON.stringify({'bookings': bookings}),
                 success: function (data, textStatus, jqXHR) {
                     this.each(function (i, e) {
+                        if ($('.driver', this).map(function () {
+                                return $(this).data('driverId')
+                            }).get().includes(ui.draggable.data('driver').id)) return
                         $('<span>').appendTo(e)
                             .text(ui.draggable.data('driver').title.rendered)
                             .attr('title', "Click to unassign " + e.title.rendered + " from this booking")
                             .addClass('driver')
-                            .data('driverId', e.id)
+                            .data('driverId', ui.draggable.data('driver').id)
                             .css('background-color', $.Color(ui.draggable.data('driver').colour).lightness(0.75))
                     })
                 },
