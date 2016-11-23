@@ -22,7 +22,7 @@
 
 table.wc_bookings_calendar_weekly td.booked,
 .drivers li {
-    background-color: hsla(0, 0%, 50%, 0.25);
+    background-color: hsl(0, 0%, 90%);
 }
 
 .wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {

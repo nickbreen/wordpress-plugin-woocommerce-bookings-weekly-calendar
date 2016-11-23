@@ -75,7 +75,7 @@ jQuery(function($) {
             function (data, textStatus, jqXHR) {
                 this.each(function (i, e) {
                     $(this).data('drivers', data.filter(function (f, j, a) {
-                            return f.id == e.dataset.bookingId
+                            return f.id == e.dataset.bookingId && f.drivers
                         }).map(function (f, j, a) {
                             return f.drivers
                         }).reduce(function (a, b) {
