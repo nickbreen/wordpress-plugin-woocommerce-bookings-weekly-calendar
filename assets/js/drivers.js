@@ -57,9 +57,6 @@ jQuery(function($) {
                     return $(this).data('driverId')
                 }).get()
             }),
-            beforeSend: function (jqXHR, settings) {
-                console.log(settings)
-            },
             success: function (data, textStatus, jqXHR) {
                 this.remove()
             },
