@@ -25,25 +25,13 @@ table.wc_bookings_calendar_weekly td.booked {
     border: hsl(0, 0%, 75%) solid 1px;
 }
 
-.wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {
-    text-align: left;
-}
-
-table.wc_bookings_calendar_weekly tfoot td {
-    vertical-align: middle;
-}
-
 .booking {
     white-space: nowrap;
 }
 
 .booking .driver,
 .drivers li {
-    width: auto;
-    width: content-min;
-    display: inline-block;
-    display: inline-list-item;
-    margin: 0.25em 0.5em;
+    margin: 1em;
     padding: 0.25em 1em 0.25em 0.5em;
     line-height: 1.6em;
     white-space: nowrap;
@@ -56,6 +44,8 @@ table.wc_bookings_calendar_weekly tfoot td {
 
 .booking .driver {
     cursor: pointer;
+    display: inline-block;
+    margin: 0 0.5em;
 }
 
 .drivers li {
@@ -68,4 +58,34 @@ table.wc_bookings_calendar_weekly tfoot td {
 
 .drivers li:before {
     content:'\2630\2003';
+}
+
+.drivers::before {
+    content: "\2630\2003 Drivers";
+    margin: -0.5em -1em 1em;
+    padding: 0.25em 2em 0.25em;
+    font-weight: bold;
+    display: block;
+    cursor: move;
+    border-bottom: 0.125em hsl(0, 0%, 75%) solid;
+}
+
+.drivers::after {
+    content: "Move me around";
+    margin: 0.5em -1em -0.5em;
+    padding: 0.25em 2em 0.25em;
+    display: block;
+}
+
+.drivers {
+    position: fixed;
+    bottom: 3em;
+    right: 2em;
+    display: inline-block;
+    background: white;
+    border: 0.125em hsl(0, 0%, 75%) solid;
+    border-radius: 0.25em;
+    margin: 1em;
+    padding: 1em;
+    line-height: 1.6em;
 }

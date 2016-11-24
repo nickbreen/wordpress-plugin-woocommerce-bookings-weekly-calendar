@@ -127,8 +127,14 @@ jQuery(function($) {
         },
         success: [
             function (data, textStatus, jqXHR) {
-                $('<tfoot><tr><th colspan="8">Drag&apos;n&apos;drop to assign a driver to a booking<ul class="drivers">').appendTo('table.wc_bookings_calendar_weekly')
-                    .find('ul.drivers').append(
+                $('<ul class="drivers">')
+                    .appendTo('#wpcontent')
+                    .draggable({
+                        containment: "parent",
+                        cursor: 'move',
+                        
+                    })
+                    .append(
                         $.map(data, function (e, i) {
                             return $('<li>').addClass('driver')
                                 .text(e.title.rendered)
