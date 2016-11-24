@@ -19,48 +19,62 @@ jQuery(function($) {
         },
         hoverClass: "ui-state-hover", // pre 1.12.0
         drop: function (event, ui) {
-            var bookings = $.merge(
-                $.isArray(ui.draggable.data('driver').bookings) ? ui.draggable.data('driver').bookings : [],
-                $('li.booking', this).map(function (i, e) {
-                    return parseInt(this.dataset.bookingId);
-                }).get()
-            )
-            $.ajax(wpApiSettings.root + 'wp/v2/driver/' + ui.draggable.data('driver').id, $.extend({}, ajaxDefaults, {
-                context: $('li.booking', this),
-                method: 'PATCH',
-                contentType: 'application/json; charset=UTF-8',
-                processData: false,
-                data: JSON.stringify({'bookings': bookings}),
+            $('li.booking', this).each(function () {
+                $.ajax(wpApiSettings.root + 'wp/v2/wc_booking/' + this.dataset.bookingId, $.extend({}, ajaxDefaults, {
+                    context: this,
+                    method: 'GET',
+                    success: function (data, textStatus, jqXHR) {
+                        $.ajax(wpApiSettings.root + 'wp/v2/wc_booking/' + this.dataset.bookingId, $.extend({}, ajaxDefaults, {
+                            context: this,
+                            method: 'PATCH',
+                            contentType: 'application/json; charset=UTF-8',
+                            processData: false,
+                            data: JSON.stringify({
+                                drivers: [ui.draggable.prop('dataset').driverId].concat(data.drivers ? data.drivers.map(function (e, i, a) {
+                                        return e.id
+                                    }) : [])
+                                }),
+                            beforeSend: console.log,
+                            success: function (data, textStatus, jqXHR) {
+                                $('<span>').appendTo(this)
+                                    .text(ui.draggable.text())
+                                    .attr('title', "Click to unassign " + ui.draggable.text() + " from this booking")
+                                    .addClass('driver')
+                                    .attr('data-driver-id', ui.draggable.prop('dataset').driverId)
+                                    .css({
+                                        'background-color': ui.draggable.css('background-color'),
+                                        'border-color': ui.draggable.css('border-color'),
+                                    });
+                            },
+                        }))
+                    },
+                }))
+            })
+        },
+    }).on('click', '.driver', function (event) {
+        $(this).closest('li.booking').each(function (i, e) {
+            $.ajax(wpApiSettings.root + 'wp/v2/wc_booking/' + this.dataset.bookingId, $.extend({}, ajaxDefaults, {
+                context: this,
+                method: 'GET',
                 success: function (data, textStatus, jqXHR) {
-                    this.each(function (i, e) {
-                        if ($('.driver', this).map(function () {
-                                return $(this).data('driverId')
-                            }).get().includes(ui.draggable.data('driver').id)) return
-                        $('<span>').appendTo(e)
-                            .text(ui.draggable.data('driver').title.rendered)
-                            .attr('title', "Click to unassign " + e.title.rendered + " from this booking")
-                            .addClass('driver')
-                            .data('driverId', ui.draggable.data('driver').id)
-                            .css('background-color', $.Color(ui.draggable.data('driver').colour).lightness(0.75))
-                    })
+                    $.ajax(wpApiSettings.root + 'wp/v2/wc_booking/' + this.dataset.bookingId, $.extend({}, ajaxDefaults, {
+                        context: this,
+                        method: 'PATCH',
+                        contentType: 'application/json; charset=UTF-8',
+                        processData: false,
+                        data: JSON.stringify({drivers: data.drivers.map(function (e, i, a) {
+                            return e.id
+                        }).filter(function (e, i, a) {
+                            return e != parseInt(event.target.dataset.driverId)
+                        })}),
+                        beforeSend: console.log,
+                        success: function (data, textStatus, jqXHR) {
+                            $(event.target).remove()
+                        },
+                    }))
                 },
             }))
-        },
-    }).on('click', '.driver', function (e) {
-        $.ajax(wpApiSettings.root + 'wp/v2/wc_booking/' + $(this).closest('li.booking').data('bookingId'), $.extend({}, ajaxDefaults, {
-            context: this,
-            method: 'PATCH',
-            contentType: 'application/json; charset=UTF-8',
-            processData: false,
-            data: JSON.stringify({
-                'drivers': $(this).siblings().map(function () {
-                    return $(this).data('driverId')
-                }).get()
-            }),
-            success: function (data, textStatus, jqXHR) {
-                this.remove()
-            },
-        }))
+        })
     })
 
     $.ajax(wpApiSettings.root + 'wp/v2/wc_booking', $.extend({}, ajaxDefaults, {
@@ -74,21 +88,31 @@ jQuery(function($) {
         success: [
             function (data, textStatus, jqXHR) {
                 this.each(function (i, e) {
-                    $(this).data('drivers', data.filter(function (f, j, a) {
-                            return f.id == e.dataset.bookingId && f.drivers
-                        }).map(function (f, j, a) {
-                            return f.drivers
-                        }).reduce(function (a, b) {
-                            return a.concat(b)
-                        }, []).forEach(function (f, j, a) {
-                            $('<span>').appendTo(e)
-                                .text(f.post_title)
-                                .attr('title', "Click to unassign " + f.post_title + " from this booking")
-                                .addClass('driver')
-                                .data('driverId', f.id)
-                                .css('background-color', $.Color(f.colour).lightness(0.75))
-                        })
-                    )
+                    data.filter(function (f, j, a) {
+                                return f.id == e.dataset.bookingId && f.drivers
+                            })
+                        .map(function (f, j, a) {
+                                return f.drivers
+                            })
+                        .reduce(function (a, b) {
+                                return a.concat(b)
+                            }, [])
+                        .sort(function (a, b) {
+                                if (a.post_title < b.post_title) return -1
+                                if (a.post_title > b.post_title) return 1
+                                return 0
+                            })
+                        .forEach(function (f, j, a) {
+                                $('<span>').appendTo(e)
+                                    .text(f.post_title)
+                                    .attr('title', "Click to unassign " + f.post_title + " from this booking")
+                                    .addClass('driver')
+                                    .attr('data-driver-id', f.id)
+                                    .css({
+                                        'background-color': $.Color(f.colour).lightness(0.75),
+                                        'border-color': $.Color(f.colour).lightness(0.5),
+                                    })
+                            })
                 })
             },
         ]
@@ -96,7 +120,10 @@ jQuery(function($) {
 
     $.ajax(wpApiSettings.root + 'wp/v2/driver', $.extend({}, ajaxDefaults, {
         data: {
-            status: '*'
+            status: '*',
+            per_page: 100,
+            order: 'asc',
+            order_by: 'title'
         },
         success: [
             function (data, textStatus, jqXHR) {
@@ -106,8 +133,11 @@ jQuery(function($) {
                             return $('<li>').addClass('driver')
                                 .text(e.title.rendered)
                                 .attr('title', "Drag'n'drop to assign " + e.title.rendered + " to a booking")
-                                .data('driver', e)
-                                .css('background-color', $.Color(e.colour).lightness(0.75))
+                                .attr('data-driver-id', e.id)
+                                .css({
+                                    'background-color': $.Color(e.colour).lightness(0.75),
+                                    'border-color': $.Color(e.colour).lightness(0.5),
+                                })
                         })
                     )
                     .find('li').draggable({helper: 'clone', opacity: 0.7})

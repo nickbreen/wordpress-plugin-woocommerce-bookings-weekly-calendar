@@ -58,7 +58,13 @@
 		</div>
 
 		<table class="wc_bookings_calendar wc_bookings_calendar_weekly widefat">
-			<caption>Week <b><?php echo date('W', $this->time); ?></b> starting <b><?php echo date('D, j M Y', $this->time); ?></b></caption>
+			<caption>
+				<a class="prev"
+					href="<?php echo add_query_arg('calendar_week', date('Y-m-d', strtotime('-7 days', $this->time))); ?>">&#x21e6;</a>
+				Week <b><?php echo date('W', $this->time); ?></b> starting <b><?php echo date('D, j M Y', $this->time); ?></b>
+				<a class="next"
+					href="<?php echo add_query_arg('calendar_week', date('Y-m-d', strtotime('+7 days', $this->time))); ?>">&#x21e8;</a>
+			</caption>
 			<thead>
 				<tr>
 					<th width="12.5%"><?php _e($view == self::VCUST ? 'Customer' : 'Product', 'wordpress-plugin-woocommerce-bookings-weekly-calendar'); ?></th>

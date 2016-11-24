@@ -20,9 +20,9 @@
     content: '\ff0b'; /* FULLWIDTH PLUS SIGN */
 }
 
-table.wc_bookings_calendar_weekly td.booked,
-.drivers li {
+table.wc_bookings_calendar_weekly td.booked {
     background-color: hsl(0, 0%, 90%);
+    border: hsl(0, 0%, 75%) solid 1px;
 }
 
 .wc_bookings_calendar_form table.wc_bookings_calendar_weekly tfoot tr td {
@@ -43,10 +43,15 @@ table.wc_bookings_calendar_weekly tfoot td {
     width: content-min;
     display: inline-block;
     display: inline-list-item;
-    margin: 0.25em 1em;
-    padding: 0.25em 1em;
+    margin: 0.25em 0.5em;
+    padding: 0.25em 1em 0.25em 0.5em;
     line-height: 1.6em;
     white-space: nowrap;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 0.125em;
+    background-color: hsl(0, 0%, 75%);
+    border-color: hsl(0, 0%, 50%);
 }
 
 .booking .driver {
@@ -58,11 +63,9 @@ table.wc_bookings_calendar_weekly tfoot td {
 }
 
 .booking .driver::before {
-    content:'\274e';
-    margin: 0.25em 1em 0.25em -0.5em;
+    content:'\274e\2003';
 }
 
 .drivers li:before {
-    content:'\2630';
-    margin: 0.25em 1em 0.25em -0.5em;
+    content:'\2630\2003';
 }
