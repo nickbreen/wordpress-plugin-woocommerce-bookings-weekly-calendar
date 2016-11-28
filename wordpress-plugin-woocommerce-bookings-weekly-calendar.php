@@ -34,3 +34,45 @@ add_filter('woocommerce_screen_ids', function ($ids) {
         'wc_booking_page_booking_calendar_weekly',
     ) );
 });
+
+/**
+ * Add the driver bookings end points
+ */
+
+add_action('init', function () {
+    // TODO option
+    add_rewrite_endpoint('driver-bookings', EP_ROOT|EP_PAGES);
+});
+
+add_filter('woocommerce_account_menu_items', function ($items) {
+    if (current_user_can('driver'))
+        // TODO option
+        $items['driver-bookings'] = __('Driver Bookings', 'wordpress-plugin-woocommerce-bookings-weekly-calendar');
+    return $items;
+});
+
+add_filter('woocommerce_endpoint_driver-bookings_title', function ($items) {
+    return __('Driver Bookings', 'wordpress-plugin-woocommerce-bookings-weekly-calendar');
+});
+
+add_filter('pods_api_get_table_info_default_post_status', function ($stati, $post_type, $info, $object_type, $object, $name, $pod, $field) {
+    return $stati = $field['options']['pick_post_status'] ?? $stati;
+}, 10, 8);
+
+add_action('woocommerce_account_driver-bookings_endpoint', function ($value) {
+    // TODO option
+    $driver = pods('driver', array(
+        'where' => sprintf('user.ID = %d', get_current_user_id())
+    ));
+
+    while ($driver->fetch()) {
+
+        printf('<h1>%s&apos;s Bookings</h1>', $driver->display('post_title'));
+
+        printf('<p>[%s]</p>', $driver->display('bookings'));
+
+        echo '<code style="color: initial">';
+        var_dump($driver->field('bookings'));
+        echo '</code>';
+    }
+});
