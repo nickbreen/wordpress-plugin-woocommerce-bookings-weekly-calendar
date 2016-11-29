@@ -69,10 +69,7 @@ add_action('woocommerce_account_driver-bookings_endpoint', function ($value) {
 
         printf('<h1>%s&apos;s Bookings</h1>', $driver->display('post_title'));
 
-        printf('<p>[%s]</p>', $driver->display('bookings'));
-
         echo '<code style="color: initial">';
-        var_dump($driver->field('bookings'));
         echo '</code>';
     }
 });
