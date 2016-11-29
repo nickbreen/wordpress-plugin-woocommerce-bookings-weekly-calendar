@@ -10,11 +10,9 @@ Text Domain: wordpress-plugin-woocommerce-bookings-weekly-calendar
 Domain Path: /languages
 */
 
-// Menu Item under 'WooCommerce Bookings' for 'Weekly Calendar'
-
 // See /wp-content/plugins/woocommerce-bookings/
 // See includes/admin/class-wc-bookings-menus.php:109
-add_action( 'admin_menu', function () {
+add_action('admin_menu', function () {
     $calendar_page = add_submenu_page(
         'edit.php?post_type=wc_booking',
         __( 'Weekly Calendar', 'wordpress-plugin-woocommerce-bookings-weekly-calendar' ),
